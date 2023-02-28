@@ -51,7 +51,6 @@ const candidatoController = {
       const {
         cpf,
         nome,
-        sobrenome,
         data_nasc,
         senha,
         email,
@@ -70,7 +69,6 @@ const candidatoController = {
 
       await body("cpf").isLength({ min: 11 }).run(req);
       await body("nome").isLength({ min: 3 }).run(req);
-      await body("sobrenome").isLength({ min: 3 }).run(req);
       await body("data_nasc").isDate().run(req);
       await body("senha").isStrongPassword().run(req);
       await body("email").isEmail().run(req);
@@ -91,11 +89,10 @@ const candidatoController = {
       if (!err.isEmpty()) return res.json({ erro: true, msg: err.array() });
 
       const sql =
-        "INSERT INTO candidatos (cand_cpf, cand_nome, cand_sobrenome, cand_nasc, cand_senha, cand_email, cand_telefone, cand_celular, cand_genero, cand_raca, cand_cep, cand_logradouro, cand_numero, cand_complemento, cand_bairro, cand_cidade, cand_estado) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        "INSERT INTO candidatos (cand_cpf, cand_nome, cand_nasc, cand_senha, cand_email, cand_telefone, cand_celular, cand_genero, cand_raca, cand_cep, cand_logradouro, cand_numero, cand_complemento, cand_bairro, cand_cidade, cand_estado) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
       const [rows] = await conn.query(sql, [
         cpf,
         nome,
-        sobrenome,
         data_nasc,
         senha,
         email,
@@ -129,7 +126,6 @@ const candidatoController = {
       const {
         cpf,
         nome,
-        sobrenome,
         data_nasc,
         senha,
         email,
@@ -148,7 +144,6 @@ const candidatoController = {
 
       await body("cpf").isLength({ min: 11 }).run(req);
       await body("nome").isLength({ min: 3 }).run(req);
-      await body("sobrenome").isLength({ min: 3 }).run(req);
       await body("data_nasc").isDate().run(req);
       await body("senha").isStrongPassword().run(req);
       await body("email").isEmail().run(req);
@@ -169,11 +164,10 @@ const candidatoController = {
       if (!err.isEmpty()) return res.json({ erro: true, msg: err.array() });
 
       const sql =
-        "UPDATE candidatos SET cand_cpf=?, cand_nome=?, cand_sobrenome=?, cand_nasc=?, cand_senha=SHA1(?), cand_email=?, cand_telefone=?, cand_celular=?, cand_genero=?, cand_raca=?, cand_cep=?, cand_logradouro=?, cand_numero=?, cand_complemento=?, cand_bairro=?, cand_cidade=?, cand_estado=? WHERE cand_id=?;";
+        "UPDATE candidatos SET cand_cpf=?, cand_nome=?, cand_nasc=?, cand_senha=SHA1(?), cand_email=?, cand_telefone=?, cand_celular=?, cand_genero=?, cand_raca=?, cand_cep=?, cand_logradouro=?, cand_numero=?, cand_complemento=?, cand_bairro=?, cand_cidade=?, cand_estado=? WHERE cand_id=?;";
       const [rows] = await conn.query(sql, [
         cpf,
         nome,
-        sobrenome,
         data_nasc,
         senha,
         email,
