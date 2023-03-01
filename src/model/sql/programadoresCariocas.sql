@@ -63,10 +63,8 @@ CREATE TABLE polos (
     polo_status ENUM('on', 'off', 'del') DEFAULT 'on',
     
     zon_id INT NOT NULL,
-    FOREIGN KEY (zon_id) REFERENCES zonas (zon_id),
-    cand_id INT NOT NULL,
-    FOREIGN KEY (cand_id) REFERENCES candidatos (cand_id)
-);
+    FOREIGN KEY (zon_id) REFERENCES zonas (zon_id)
+   );
 
 INSERT INTO candidatos (cand_id, cand_data, cand_nome, cand_email, cand_senha, cand_cpf, cand_nascimento, cand_telefone, cand_celular, cand_genero, cand_raca, cand_cep, cand_logradouro, cand_numero, cand_complemento, cand_bairro, cand_cidade, cand_estado, cand_status) 
 VALUES 
