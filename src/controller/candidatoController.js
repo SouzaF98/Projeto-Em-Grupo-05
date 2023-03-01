@@ -124,11 +124,11 @@ const candidatoController = {
       const id = req.params.id;
 
       const {
-        cpf,
         nome,
-        data_nasc,
-        senha,
         email,
+        senha,
+        cpf,
+        data_nasc,
         telefone,
         celular,
         genero,
@@ -142,11 +142,11 @@ const candidatoController = {
         estado,
       } = req.body;
 
-      await body("cpf").isLength({ min: 11 }).run(req);
       await body("nome").isLength({ min: 3 }).run(req);
-      await body("data_nasc").isDate().run(req);
-      await body("senha").isStrongPassword().run(req);
       await body("email").isEmail().run(req);
+      await body("senha").isStrongPassword().run(req);
+      await body("cpf").isLength({ min: 11 }).run(req);
+      await body("data_nasc").isDate().run(req);
       await body("telefone").isLength({ min: 10 }).run(req);
       await body("celular").isLength({ min: 11 }).run(req);
       await body("genero").isAlpha().run(req);
@@ -164,13 +164,13 @@ const candidatoController = {
       if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql =
-        "UPDATE candidatos SET cand_cpf=?, cand_nome=?, cand_nasc=?, cand_senha=SHA1(?), cand_email=?, cand_telefone=?, cand_celular=?, cand_genero=?, cand_raca=?, cand_cep=?, cand_logradouro=?, cand_numero=?, cand_complemento=?, cand_bairro=?, cand_cidade=?, cand_estado=? WHERE cand_id=?;";
+        "UPDATE candidatos SET cand_nome=?, cand_email=?, cand_senha=SHA1(?), cand_cpf=?, cand_nascimento=?, cand_telefone=?, cand_celular=?, cand_genero=?, cand_raca=?, cand_cep=?, cand_logradouro=?, cand_numero=?, cand_complemento=?, cand_bairro=?, cand_cidade=?, cand_estado=? WHERE cand_id=?;";
       const [rows] = await conn.query(sql, [
-        cpf,
         nome,
-        data_nasc,
-        senha,
         email,
+        senha,
+        cpf,
+        data_nasc,
         telefone,
         celular,
         genero,
