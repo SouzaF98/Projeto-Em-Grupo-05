@@ -11,7 +11,7 @@ const aprovadoController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -25,7 +25,7 @@ const aprovadoController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -37,12 +37,12 @@ const aprovadoController = {
       const [rows] = await conn.query(sql, [id]);
 
       res.json({
-        erro: false,
+        sucesso: true,
         id: id,
         status: "Resultado deletado com sucesso!",
       });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -70,15 +70,15 @@ const aprovadoController = {
 
       const err = validationResult(req);
 
-      if (!err.isEmpty()) return res.json({ erro: true, msg: err.array() });
+      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       res.json({
-        erro: false,
+        sucesso: true,
         id: rows.insertId,
         status: "Resultado inserido com sucesso!",
       });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -109,15 +109,15 @@ const aprovadoController = {
 
       const err = validationResult(req);
 
-      if (!err.isEmpty()) return res.json({ erro: true, msg: err.array() });
+      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       res.json({
-        erro: false,
+        sucesso: true,
         id: id,
         msg: "Resultado atualizado com sucesso!",
       });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 };

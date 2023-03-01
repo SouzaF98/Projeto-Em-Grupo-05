@@ -11,7 +11,7 @@ const zonaController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -24,7 +24,7 @@ const zonaController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -35,9 +35,9 @@ const zonaController = {
       const sql = "UPDATE zonas SET zon_status='del' WHERE zon_id=?";
       const [rows] = await conn.query(sql, [id]);
 
-      res.json({ erro: false, id: id, status: "Zona deletada com sucesso!" });
+      res.json({ sucesso: true, id: id, status: "Zona deletada com sucesso!" });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -50,18 +50,18 @@ const zonaController = {
 
       const err = validationResult(req);
 
-      if (!err.isEmpty()) return res.json({ erro: true, msg: err.array() });
+      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql = "INSERT INTO zonas (zon_nome, zon_tipo) VALUES (?, ?);";
       const [rows] = await conn.query(sql, [nome, tipo]);
 
       res.json({
-        erro: false,
+        sucesso: true,
         id: rows.insertId,
         status: "Zona inserida com sucesso!",
       });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 
@@ -76,18 +76,18 @@ const zonaController = {
 
       const err = validationResult(req);
 
-      if (!err.isEmpty()) return res.json({ erro: true, msg: err.array() });
+      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql = "UPDATE zonas SET zon_nome=?, zon_tipo=? WHERE zon_id=?;";
       const [rows] = await conn.query(sql, [nome, tipo, id]);
 
       res.json({
-        erro: false,
+        sucesso: true,
         id: id,
         status: "Zona atualizada com sucesso!",
       });
     } catch (error) {
-      res.json({ erro: true, msg: error });
+      res.json({ sucesso: false, msg: error });
     }
   },
 };
