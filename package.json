@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,10 +19,12 @@
   },
   "homepage": "https://github.com/FellyBrasil/Projeto-Em-Grupo-05#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.15.0",
+    "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.1.2"
   },
   "devDependencies": {

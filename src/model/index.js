@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 const conf = dotenv.config().parsed;
-
 import mysql from "mysql2";
+
 const conn = mysql
   .createPool({
     host: conf.HOSTNAME,

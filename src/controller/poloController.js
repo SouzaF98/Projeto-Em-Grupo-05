@@ -1,7 +1,5 @@
 import conn from "../model/index.js";
 
-import { body, validationResult } from "express-validator";
-
 const poloController = {
   getAll: async (req, res) => {
     try {
@@ -11,7 +9,7 @@ const poloController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -24,7 +22,7 @@ const poloController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -37,7 +35,7 @@ const poloController = {
 
       res.json({ sucesso: true, id: id, status: "Polo deletado com sucesso!" });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -59,25 +57,6 @@ const poloController = {
         estado,
         id_zona,
       } = req.body;
-
-      await body("nome").isLength({ min: 3 }).run(req);
-      await body("cnpj").isLength({ min: 14 }).run(req);
-      await body("telefone").isLength({ min: 10 }).run(req);
-      await body("email").isEmail().run(req);
-      await body("abertura").isTime().run(req);
-      await body("encerramento").isTime().run(req);
-      await body("cep").isPostalCode("BR").run(req);
-      await body("logradouro").isLength({ min: 3 }).run(req);
-      await body("numero").isInt().run(req);
-      await body("complemento").isLength({ min: 3 }).run(req);
-      await body("bairro").isLength({ min: 3 }).run(req);
-      await body("cidade").isLength({ min: 3 }).run(req);
-      await body("estado").isLength({ min: 2, max: 2 }).run(req);
-      await body("id_zona").isInt().run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql =
         "INSERT INTO polos (polo_nome, polo_cnpj, polo_telefone, polo_email, polo_hora_abertura, polo_hora_encerramento, polo_cep, polo_logradouro, polo_numero, polo_complemento, polo_bairro, polo_cidade, polo_estado, zon_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -104,7 +83,7 @@ const poloController = {
         status: "Polo inserido com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -128,25 +107,6 @@ const poloController = {
         estado,
         id_zona,
       } = req.body;
-
-      await body("nome").isLength({ min: 3 }).run(req);
-      await body("cnpj").isLength({ min: 14 }).run(req);
-      await body("telefone").isLength({ min: 10 }).run(req);
-      await body("email").isEmail().run(req);
-      await body("abertura").isTime().run(req);
-      await body("encerramento").isTime().run(req);
-      await body("cep").isPostalCode("BR").run(req);
-      await body("logradouro").isLength({ min: 3 }).run(req);
-      await body("numero").isInt().run(req);
-      await body("complemento").isLength({ min: 3 }).run(req);
-      await body("bairro").isLength({ min: 3 }).run(req);
-      await body("cidade").isLength({ min: 3 }).run(req);
-      await body("estado").isLength({ min: 2, max: 2 }).run(req);
-      await body("id_zona").isInt().run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql =
         "UPDATE polos SET polo_nome=?, polo_cnpj=?, polo_telefone=?, polo_email=?, polo_hora_abertura=?, polo_hora_encerramento=?, polo_cep=?, polo_logradouro=?, polo_numero=?, polo_complemento=?, polo_bairro=?, polo_cidade=?, polo_estado=?, zon_id=? WHERE polo_id=?;";
@@ -174,7 +134,7 @@ const poloController = {
         status: "Polo atualizado com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 };

@@ -1,7 +1,5 @@
 import conn from "../model/index.js";
 
-import { body, validationResult } from "express-validator";
-
 const zonaController = {
   getAll: async (req, res) => {
     try {
@@ -11,7 +9,7 @@ const zonaController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -24,7 +22,7 @@ const zonaController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -37,20 +35,13 @@ const zonaController = {
 
       res.json({ sucesso: true, id: id, status: "Zona deletada com sucesso!" });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
   post: async (req, res) => {
     try {
       const { nome, tipo } = req.body;
-
-      await body("nome").isLength({ min: 3 }).run(req);
-      await body("tipo").isInt().run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql = "INSERT INTO zonas (zon_nome, zon_tipo) VALUES (?, ?);";
       const [rows] = await conn.query(sql, [nome, tipo]);
@@ -61,7 +52,7 @@ const zonaController = {
         status: "Zona inserida com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -70,13 +61,6 @@ const zonaController = {
       const id = req.params.id;
 
       const { nome, tipo } = req.body;
-
-      await body("nome").isLength({ min: 3 }).run(req);
-      await body("tipo").isInt().run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
 
       const sql = "UPDATE zonas SET zon_nome=?, zon_tipo=? WHERE zon_id=?;";
       const [rows] = await conn.query(sql, [nome, tipo, id]);
@@ -87,7 +71,7 @@ const zonaController = {
         status: "Zona atualizada com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 };

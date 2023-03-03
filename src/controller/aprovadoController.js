@@ -1,7 +1,5 @@
 import conn from "../model/index.js";
 
-import { body, validationResult } from "express-validator";
-
 const aprovadoController = {
   getAll: async (req, res) => {
     try {
@@ -11,7 +9,7 @@ const aprovadoController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -25,7 +23,7 @@ const aprovadoController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -33,7 +31,8 @@ const aprovadoController = {
     try {
       const id = req.params.id;
 
-      const sql = "UPDATE cand_resultados SET resul_status='del' WHERE cand_id=?;";
+      const sql =
+        "UPDATE cand_resultados SET resul_status='del' WHERE cand_id=?;";
       const [rows] = await conn.query(sql, [id]);
 
       res.json({
@@ -42,7 +41,7 @@ const aprovadoController = {
         status: "Resultado deletado com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -61,24 +60,13 @@ const aprovadoController = {
         id_zona,
       ]);
 
-      await body("colocacao").isInt().run(req);
-      await body("cota").isAlpha().run(req);
-      await body("nota").isDecimal({ force_decimal: true }).run(req);
-      await body("final").isAlpha().run(req);
-      await body("id_candidato").isInt().run(req);
-      await body("id_zona").isInt().run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
-
       res.json({
         sucesso: true,
         id: rows.insertId,
         status: "Resultado inserido com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -100,24 +88,13 @@ const aprovadoController = {
         id,
       ]);
 
-      await body("colocacao").isInt().run(req);
-      await body("cota").isAlpha().run(req);
-      await body("nota").isDecimal({ force_decimal: true }).run(req);
-      await body("final").isAlpha().run(req);
-      await body("id_candidato").isInt().run(req);
-      await body("id_zona").isInt().run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
-
       res.json({
         sucesso: true,
         id: id,
         msg: "Resultado atualizado com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 };

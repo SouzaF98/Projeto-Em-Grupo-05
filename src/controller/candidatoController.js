@@ -1,8 +1,42 @@
 import conn from "../model/index.js";
-
-import { body, validationResult } from "express-validator";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+const conf = dotenv.config().parsed;
 
 const candidatoController = {
+  login: async (req, res) => {
+    try {
+      const { email, senha } = req.body;
+
+      const sql = `SELECT cand_id, cand_nome, cand_email, cand_senha FROM candidatos WHERE cand_email='${email}';`;
+      const [rows] = await conn.query(sql, [email, senha]);
+
+      if (email !== rows[0].cand_email) {
+        return res.status(400).json({
+          sucesso: false,
+          msg: "Usuário ou senha incorretos.",
+        });
+      }
+
+      if (!(await bcrypt.compare(senha, rows[0].cand_senha))) {
+        return res.status(400).json({
+          sucesso: false,
+          msg: "Usuário ou senha incorretos.",
+        });
+      }
+
+      const token = jwt.sign({ id: rows[0].cand_id }, conf.JWT_PRIVATEKEY, {
+        // expiresIn: 60 // 1 min
+        // expiresIn: 600 // 10 min
+        expiresIn: "7d", // 7 dias
+      });
+      res.json({ sucesso: true, msg: "Login realizado com sucesso!", token });
+    } catch (error) {
+      res.status(400).json({ sucesso: false, msg: error });
+    }
+  },
+
   getAll: async (req, res) => {
     try {
       const sql =
@@ -11,7 +45,7 @@ const candidatoController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -25,7 +59,7 @@ const candidatoController = {
 
       res.json({ data: rows });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -42,7 +76,7 @@ const candidatoController = {
         status: "Candidato deletado com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -67,33 +101,13 @@ const candidatoController = {
         estado,
       } = req.body;
 
-      await body("nome").isLength({ min: 3 }).run(req);
-      await body("email").isEmail().run(req);
-      await body("senha").isStrongPassword().run(req);
-      await body("cpf").isLength({ min: 11 }).run(req);
-      await body("data_nasc").isDate().run(req);
-      await body("telefone").isLength({ min: 10 }).run(req);
-      await body("celular").isLength({ min: 11 }).run(req);
-      await body("genero").isAlpha().run(req);
-      await body("raca").isAlpha().run(req);
-      await body("cep").isPostalCode("BR").run(req);
-      await body("logradouro").isLength({ min: 3 }).run(req);
-      await body("numero").isInt().run(req);
-      await body("complemento").isLength({ min: 3 }).run(req);
-      await body("bairro").isLength({ min: 3 }).run(req);
-      await body("cidade").isLength({ min: 3 }).run(req);
-      await body("estado").isLength({ min: 2, max: 2 }).run(req);
+      const password = await bcrypt.hash(senha, 8);
 
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
-
-      const sql =
-        "INSERT INTO candidatos (cand_nome, cand_email, cand_senha, cand_cpf, cand_nascimento, cand_telefone, cand_celular, cand_genero, cand_raca, cand_cep, cand_logradouro, cand_numero, cand_complemento, cand_bairro, cand_cidade, cand_estado) VALUES (?, ?, SHA1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+      const sql = `INSERT INTO candidatos (cand_nome, cand_email, cand_senha, cand_cpf, cand_nascimento, cand_telefone, cand_celular, cand_genero, cand_raca, cand_cep, cand_logradouro, cand_numero, cand_complemento, cand_bairro, cand_cidade, cand_estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
       const [rows] = await conn.query(sql, [
         nome,
         email,
-        senha,
+        password,
         cpf,
         data_nasc,
         telefone,
@@ -115,7 +129,7 @@ const candidatoController = {
         status: "Candidato inserido com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 
@@ -142,33 +156,14 @@ const candidatoController = {
         estado,
       } = req.body;
 
-      await body("nome").isLength({ min: 3 }).run(req);
-      await body("email").isEmail().run(req);
-      await body("senha").isStrongPassword().run(req);
-      await body("cpf").isLength({ min: 11 }).run(req);
-      await body("data_nasc").isDate().run(req);
-      await body("telefone").isLength({ min: 10 }).run(req);
-      await body("celular").isLength({ min: 11 }).run(req);
-      await body("genero").isAlpha().run(req);
-      await body("raca").isAlpha().run(req);
-      await body("cep").isPostalCode("BR").run(req);
-      await body("logradouro").isLength({ min: 3 }).run(req);
-      await body("numero").isInt().run(req);
-      await body("complemento").isLength({ min: 3 }).run(req);
-      await body("bairro").isLength({ min: 3 }).run(req);
-      await body("cidade").isLength({ min: 3 }).run(req);
-      await body("estado").isLength({ min: 2, max: 2 }).run(req);
-
-      const err = validationResult(req);
-
-      if (!err.isEmpty()) return res.json({ sucesso: false, msg: err.array() });
+      const password = await bcrypt.hash(senha, 8);
 
       const sql =
-        "UPDATE candidatos SET cand_nome=?, cand_email=?, cand_senha=SHA1(?), cand_cpf=?, cand_nascimento=?, cand_telefone=?, cand_celular=?, cand_genero=?, cand_raca=?, cand_cep=?, cand_logradouro=?, cand_numero=?, cand_complemento=?, cand_bairro=?, cand_cidade=?, cand_estado=? WHERE cand_id=?;";
+        "UPDATE candidatos SET cand_nome=?, cand_email=?, cand_senha=?, cand_cpf=?, cand_nascimento=?, cand_telefone=?, cand_celular=?, cand_genero=?, cand_raca=?, cand_cep=?, cand_logradouro=?, cand_numero=?, cand_complemento=?, cand_bairro=?, cand_cidade=?, cand_estado=? WHERE cand_id=?;";
       const [rows] = await conn.query(sql, [
         nome,
         email,
-        senha,
+        password,
         cpf,
         data_nasc,
         telefone,
@@ -191,7 +186,7 @@ const candidatoController = {
         status: "Candidato atualizado com sucesso!",
       });
     } catch (error) {
-      res.json({ sucesso: false, msg: error });
+      res.status(400).json({ sucesso: false, msg: error });
     }
   },
 };
