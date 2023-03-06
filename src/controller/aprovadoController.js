@@ -4,7 +4,7 @@ const aprovadoController = {
   getAll: async (req, res) => {
     try {
       const sql =
-        "SELECT resul_colocacao, cand_nome, zon_nome FROM cand_resultados AS cr INNER JOIN candidatos AS c ON cr.cand_id=c.cand_id INNER JOIN zonas AS z ON cr.zon_id=z.zon_id WHERE resul_status='on' AND resul_final='aprovado' ORDER BY resul_colocacao;";
+        "SELECT resul_colocacao, cand_nome, zon_nome, polo_nome FROM resultados AS r INNER JOIN candidatos AS c ON r.cand_id=c.cand_id INNER JOIN zonas AS z ON r.zon_id=z.zon_id INNER JOIN polos AS p ON p.zon_id=z.zon_id WHERE resul_status='on' AND resul_final='aprovado' ORDER BY resul_colocacao;";
       const [rows] = await conn.query(sql);
 
       res.json({ data: rows });
@@ -18,7 +18,7 @@ const aprovadoController = {
       const id = req.params.id;
 
       const sql =
-        "SELECT resul_colocacao, cand_nome, zon_nome FROM cand_resultados AS cr INNER JOIN candidatos AS c ON cr.cand_id=c.cand_id INNER JOIN zonas AS z ON cr.zon_id=z.zon_id WHERE resul_status='on' AND resul_final='aprovado' AND c.cand_id=?;";
+        "SELECT resul_colocacao, cand_nome, zon_nome, polo_nome FROM resultados AS r INNER JOIN candidatos AS c ON r.cand_id=c.cand_id INNER JOIN zonas AS z ON r.zon_id=z.zon_id INNER JOIN polos AS p ON p.zon_id=z.zon_id WHERE resul_status='on' AND resul_final='aprovado' AND c.cand_id=?;";
       const [rows] = await conn.query(sql, [id]);
 
       res.json({ data: rows });
@@ -31,8 +31,7 @@ const aprovadoController = {
     try {
       const id = req.params.id;
 
-      const sql =
-        "UPDATE cand_resultados SET resul_status='del' WHERE cand_id=?;";
+      const sql = "UPDATE resultados SET resul_status='del' WHERE cand_id=?;";
       const [rows] = await conn.query(sql, [id]);
 
       res.json({
@@ -50,7 +49,7 @@ const aprovadoController = {
       const { colocacao, cota, nota, final, id_candidato, id_zona } = req.body;
 
       const sql =
-        "INSERT INTO cand_resultados (resul_colocacao, resul_cota, resul_nota, resul_final, cand_id, zon_id) VALUES (?, ?, ?, ?, ?, ?);";
+        "INSERT INTO resultados (resul_colocacao, resul_cota, resul_nota, resul_final, cand_id, zon_id) VALUES (?, ?, ?, ?, ?, ?);";
       const [rows] = await conn.query(sql, [
         colocacao,
         cota,
@@ -77,7 +76,7 @@ const aprovadoController = {
       const { colocacao, cota, nota, final, id_candidato, id_zona } = req.body;
 
       const sql =
-        "UPDATE cand_resultados SET resul_colocacao=?, resul_cota=?, resul_nota=?, resul_final=?, cand_id=?, zon_id=? WHERE cand_id=?;";
+        "UPDATE resultados SET resul_colocacao=?, resul_cota=?, resul_nota=?, resul_final=?, cand_id=?, zon_id=? WHERE cand_id=?;";
       const [rows] = await conn.query(sql, [
         colocacao,
         cota,

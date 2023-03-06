@@ -31,7 +31,12 @@ const candidatoController = {
         // expiresIn: 600 // 10 min
         expiresIn: "7d", // 7 dias
       });
-      res.json({ sucesso: true, msg: "Login realizado com sucesso!", token });
+      res.json({
+        sucesso: true,
+        msg: "Login realizado com sucesso!",
+        user: { id: rows[0].cand_id, email: rows[0].cand_email },
+        token,
+      });
     } catch (error) {
       res.status(400).json({ sucesso: false, msg: error });
     }

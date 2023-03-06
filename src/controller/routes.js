@@ -11,7 +11,7 @@ import {
 
 import eAdmin from "./auth.js";
 
-router.get("/admin", eAdmin, (req, res) => {
+router.get("/painel", eAdmin, (req, res) => {
   res.json({
     sucesso: true,
     msg: "Painel Administrativo",
